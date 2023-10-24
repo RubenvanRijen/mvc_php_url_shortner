@@ -2,7 +2,7 @@
   "name": "mvc_php_url_shortner",
   "version": "1.0.0",
   "description": "a plain php url shortner made with the mvc structure",
-  "main": "index.js",
+  "main": "./public/js/index.js",
   "scripts": {
     "test": "test",
     "tailwind": "npx tailwindcss -i ./public/css/style.css -o ./dist/output.css --watch"
