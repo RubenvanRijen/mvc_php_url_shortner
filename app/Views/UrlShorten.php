@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <title>URL Shortener</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/dist/output.css?v=1" rel="stylesheet">
-</head>
-
+<?php include __DIR__ . '/Components/head.php'; ?>
 <body>
+<?php include __DIR__ . '/Components/header.php'; ?>
+
 <div class="flex flex-col items-center justify-center h-screen">
     <h1 class="text-8xl font-bold pb-20">URL Shortener</h1>
     <form class="w-1/2 pb-20" action="" method="post">
@@ -62,6 +58,8 @@
         </tbody>
     </table>
 </div>
-</body>
+<?php include __DIR__ . '/Components/footer.php'; ?>
 
+</body>
+<script defer type="module" src="/public/js/index.js"></script>
 </html>
