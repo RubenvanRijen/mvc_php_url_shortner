@@ -1,0 +1,22 @@
+{
+    "name": "rubenr/mvc_php_url_shortner",
+    "description": "a url shortner made with plain php in a mvc structure",
+    "autoload": {
+        "psr-4": {
+            "MvcPhpUrlShortner\\": "app/"
+        },
+        "classmap": [
+            "app/"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Ruben van Rijen",
+            "email": "rubenvanrijen@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2.0",
+        "ext-pdo": "*"
+    }
+}

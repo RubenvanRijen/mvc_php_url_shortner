@@ -1,0 +1,37 @@
+# Ignore PHP-related files and directories
+/.htaccess
+/php.ini
+/php-error.log
+/vendor/
+/composer.phar
+/app/Database/config.php
+
+# Ignore npm-related files and directories
+/node_modules/
+/npm-debug.log
+
+# Ignore environment-specific files
+.env
+.env.local
+.env.*.local
+
+# Ignore log files
+/log/
+*.log
+
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db
+
+# Ignore configuration files
+/config.php
+
+# Ignore Composer autoloader file
+/vendor/autoload.php
+
+# Ignore npm's package-lock.json file
+package-lock.json
+
+# Ignore Visual Studio Code settings
+.vscode/
+
