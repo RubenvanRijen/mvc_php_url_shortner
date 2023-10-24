@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "tailwind-watch": "npx tailwindcss -i ./public/css/index.css -o ./dist/output.css --watch"
+    "tailwind": "npx tailwindcss -i ./public/css/style.css -o ./dist/output.css --watch"
   },
   "author": "RubenR",
   "license": "ISC",
