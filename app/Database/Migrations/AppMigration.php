@@ -1,13 +1,30 @@
 <?php
 
+namespace MvcPhpUrlShortner\Database\Migrations;
 
 use MvcPhpUrlShortner\Database\Database;
+use PDO;
 
-$UrlMigration = require __DIR__ . "/UrlMigration.php";
+class  AppMigration
+{
 
-$migratios = [$UrlMigration];
+    private PDO $db;
 
-$db = Database::getInstance();
-foreach ($migratios as $migration) {
-    $db->exec($migration);
+    public function __construct()
+    {
+        $this->db = Database::getInstance();;
+    }
+
+    public function migrateApplication()
+    {
+        $urlMigration = new UrlMigration($this->db);
+        $urlMigration->up();
+    }
+
+    public function unMigrateApplication()
+    {
+        $urlMigration = new UrlMigration($this->db);
+        $urlMigration->down();
+    }
+
 }

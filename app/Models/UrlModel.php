@@ -4,12 +4,16 @@ namespace MvcPhpUrlShortner\Models;
 
 class UrlModel
 {
-    public string $link;
+    public string $short_url;
+    public string $original_url;
+    public int $usedAmount;
 
 
-    public function __construct(string $link)
+    public function __construct(string $short_url, string $original_url, int $usedAmount)
     {
-        $this->link = $link;
+        $this->short_url = $short_url;
+        $this->original_url = $original_url;
+        $this->usedAmount = $usedAmount;
     }
 
     /**
