@@ -28,7 +28,7 @@ class UrlController extends BaseController
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 
         // Number of items per page
-        $perPage = 1;
+        $perPage = 5;
 
         // Retrieve URLs for the given page
         $urls = $this->getUrlModel()->getUrls($page, $perPage);
