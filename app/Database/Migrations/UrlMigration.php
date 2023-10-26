@@ -4,18 +4,9 @@ namespace MvcPhpUrlShortner\Database\Migrations;
 
 use PDO;
 
-class UrlMigration
+class UrlMigration extends BaseMigration
 {
-    private PDO $db;
 
-    /**
-     * constructor
-     * @param PDO $db
-     */
-    public function __construct(PDO $db)
-    {
-        $this->db = $db;
-    }
 
     /**
      * create the table
@@ -33,7 +24,7 @@ class UrlMigration
             )
         ";
 
-        $this->db->exec($sql);
+        $this->getDb()->exec($sql);
     }
 
     /**
@@ -43,7 +34,7 @@ class UrlMigration
     public function down(): void
     {
         $sql = "DROP TABLE IF EXISTS urls";
-        $this->db->exec($sql);
+        $this->getDb()->exec($sql);
     }
 
 }

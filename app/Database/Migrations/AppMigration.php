@@ -9,22 +9,39 @@ class  AppMigration
 {
 
     private PDO $db;
+    private array $migrations = [];
 
     public function __construct()
     {
         $this->db = Database::getInstance();;
     }
 
-    public function migrateApplication()
+    /**
+     * add all the migrations to be called for a migration call.
+     * @return void
+     */
+    private function populateMigrations(): void
     {
-        $urlMigration = new UrlMigration($this->db);
-        $urlMigration->up();
+        array_push($this->migrations, new UrlMigration($this->db));
+    }
+
+    /**
+     * @return void
+     */
+    public function migrateApplication(): void
+    {
+        $this->populateMigrations();
+        foreach ($this->migrations as $migration) {
+            $migration->up();
+        }
     }
 
     public function unMigrateApplication()
     {
-        $urlMigration = new UrlMigration($this->db);
-        $urlMigration->down();
+        $this->populateMigrations();
+        foreach ($this->migrations as $migration) {
+            $migration->down();
+        }
     }
 
 }

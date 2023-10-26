@@ -5,18 +5,10 @@ namespace MvcPhpUrlShortner\Database\Seeders;
 use MvcPhpUrlShortner\Objects\UrlObject;
 use PDO;
 
-class UrlSeeder
+class UrlSeeder extends BaseSeeder
 {
-    private PDO $db;
-
-    public function __construct(PDO $db)
-    {
-        $this->db = $db;
-    }
-
     /**
      * Seed the "urls" table with data.
-     *
      * @return void
      */
     public function seed(): void
@@ -28,7 +20,7 @@ class UrlSeeder
             new UrlObject("https://music.youtube4.com/", "https://music.youtube4.com/", 0),
         ];
 
-        $stmt = $this->db->prepare("INSERT INTO urls (short_url, original_url, usedAmount) VALUES (:short_url, :original_url, :usedAmount)");
+        $stmt = $this->getDb()->prepare("INSERT INTO urls (short_url, original_url, usedAmount) VALUES (:short_url, :original_url, :usedAmount)");
 
         foreach ($urlData as $url) {
             $stmt->bindValue(':short_url', $url->getShortUrl());

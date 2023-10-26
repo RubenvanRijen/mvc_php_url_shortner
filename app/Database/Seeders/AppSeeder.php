@@ -8,6 +8,7 @@ use PDO;
 class AppSeeder
 {
     private PDO $db;
+    private array $seeders = [];
 
     public function __construct()
     {
@@ -16,12 +17,26 @@ class AppSeeder
 
 
     /**
+     * add all the seeders to be called for a seed.
      * @return void
      */
-    function seedApplication(): void
+    private function populateSeeder(): void
     {
-        $urlSeeder = new UrlSeeder($this->db);
-        $urlSeeder->seed();
+        array_push($this->seeders, new UrlSeeder($this->db));
+
+    }
+
+
+    /**
+     * seed the database with data.
+     * @return void
+     */
+    public function seedApplication(): void
+    {
+        $this->populateSeeder();
+        foreach ($this->seeders as $seeder) {
+            $seeder->seed();
+        }
     }
 
 }
