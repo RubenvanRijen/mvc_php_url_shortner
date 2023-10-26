@@ -1,14 +1,25 @@
 <?php
 
-namespace MvcPhpUrlShortner\Routes;
-
-
 use MvcPhpUrlShortner\Controllers\UrlController;
+use MvcPhpUrlShortner\Models\UrlModel;
+use MvcPhpUrlShortner\Routes\Router;
 
+// create the logic for the routes
 $router = new Router();
 
-$router->addRoute('/', UrlController::class, 'index');
+// Create the instances of the controllers with the required dependencies if needed. But not smart to do for now.
+$urlController = new UrlController();
+
+// create the routes
+$router->addRoute('/url', $urlController, 'index');
 
 
+// get the url asked
 $uri = $_SERVER['REQUEST_URI'];
-$router->dispatch($uri);
+
+// serve the uri or throw an exception for now.
+try {
+    $router->dispatch($uri);
+} catch (\Exception $e) {
+    throw $e;
+}

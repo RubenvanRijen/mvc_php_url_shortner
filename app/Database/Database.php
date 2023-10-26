@@ -1,6 +1,7 @@
 <?php
 
 namespace MvcPhpUrlShortner\Database;
+require_once __DIR__ . '/config.php';
 
 use PDO;
 use PDOException;
@@ -12,7 +13,6 @@ class Database
 
     private function __construct()
     {
-        require_once __DIR__ . '/config.php'; // Include the config.php file with DB_HOST, DB_NAME, DB_USER, and DB_PASSWORD.
 
         try {
             $this->connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);

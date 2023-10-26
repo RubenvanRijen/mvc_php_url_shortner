@@ -2,34 +2,46 @@
 
 namespace MvcPhpUrlShortner\Models;
 
+use MvcPhpUrlShortner\Database\Database;
+use PDO;
+
 class UrlModel
 {
-    public string $short_url;
-    public string $original_url;
-    public int $usedAmount;
+    private PDO $db;
 
-
-    public function __construct(string $short_url, string $original_url, int $usedAmount)
+    public function __construct()
     {
-        $this->short_url = $short_url;
-        $this->original_url = $original_url;
-        $this->usedAmount = $usedAmount;
+        $this->db = Database::getInstance();
     }
 
     /**
-     * @return string
+     * @param $page
+     * @param $perPage
+     * @return false|array
      */
-    public function getLink(): string
+    public function getUrls($page, $perPage): false|array
     {
-        return $this->link;
+        // Calculate the limit and offset based on the page and perPage values
+        $limit = $perPage;
+        $offset = ($page - 1) * $perPage;
+
+        // Fetch URLs with pagination
+        $stmt = $this->db->prepare("SELECT * FROM urls LIMIT :limit OFFSET :offset");
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
-     * @param string $link
+     * @return mixed
      */
-    public function setLink(string $link): void
+    public function getTotalUrlsCount(): mixed
     {
-        $this->link = $link;
-    }
+        // Get the total count of URLs in the database
+        $stmt = $this->db->query("SELECT COUNT(*) FROM urls");
 
+        return $stmt->fetchColumn();
+    }
 }
