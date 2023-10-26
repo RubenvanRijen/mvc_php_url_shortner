@@ -52,14 +52,16 @@ class Router
     private function findMatchingRoute(string $uri): ?array
     {
         foreach ($this->routes as $route => $routeInfo) {
-            if ($this->matchesRoute($uri, $route)) {
+            // Split the URI into path and query parts
+            list($path, $query) = explode('?', $uri . '?', 2);
+    
+            if ($this->matchesRoute($path, $route)) {
                 return $routeInfo;
             }
         }
-
+    
         return null;
     }
-
     /**
      * Check if the given URI matches a route with optional parameters.
      *

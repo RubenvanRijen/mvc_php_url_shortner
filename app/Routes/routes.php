@@ -12,6 +12,7 @@ $urlController = new UrlController();
 
 // create the routes
 $router->addRoute('/url', $urlController, 'index');
+$router->addRoute('/', $urlController, 'index');
 
 
 // get the url asked

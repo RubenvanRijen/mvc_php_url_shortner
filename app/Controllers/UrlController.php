@@ -28,7 +28,7 @@ class UrlController extends BaseController
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 
         // Number of items per page
-        $perPage = 2;
+        $perPage = 1;
 
         // Retrieve URLs for the given page
         $urls = $this->getUrlModel()->getUrls($page, $perPage);
@@ -36,14 +36,15 @@ class UrlController extends BaseController
         // Total count of URLs
         $totalUrls = $this->getUrlModel()->getTotalUrlsCount();
 
+        $totalPages = ceil($totalUrls / $perPage);
         // Pass data to the view
         $data = [
             'urls' => $urls,
             'totalUrls' => $totalUrls,
             'perPage' => $perPage,
             'currentPage' => $page,
+            'totalPages' => $totalPages
         ];
-        echo $data['urls'][0]['short_url'];
         $this->render('UrlShorten', ["data" => $data]);
     }
 
