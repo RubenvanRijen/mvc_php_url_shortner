@@ -24,7 +24,9 @@
     </form>
     <div class="w-1/2 relative overflow-x-auto shadow-md sm:rounded-lg mb-5">
         <?php if ($data['newUrl'] != null) : ?>
-            <h4 class="mb-4">Created Url: <?php echo $data['baseUrl'] . '/short/' . $data['newUrl']; ?></h4>
+            <h2 class="mb-4">Created Url: <a target="_blank" class="mb-4"
+                                href="<?php echo $data['baseUrl'] . '/short/' . $data['newUrl']; ?>">Short Url</a>
+            </h2>
         <?php endif; ?>
 
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">

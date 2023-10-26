@@ -19,6 +19,7 @@ class UrlModel
     }
 
     /**
+     * get all the dates paginated
      * @param $page
      * @param $perPage
      * @return false|array
@@ -30,7 +31,28 @@ class UrlModel
         $offset = ($page - 1) * $perPage;
 
         // Fetch URLs with pagination
-        $stmt = $this->db->prepare("SELECT * FROM urls LIMIT :limit OFFSET :offset");
+        $stmt = $this->db->prepare("SELECT * FROM urls  LIMIT :limit OFFSET :offset");
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * sort the urls by date. from newest to oldest.
+     * @param $page
+     * @param $perPage
+     * @return false|array
+     */
+    public function getUrlsSortedByDate($page, $perPage): false|array
+    {
+        // Calculate the limit and offset based on the page and perPage values
+        $limit = $perPage;
+        $offset = ($page - 1) * $perPage;
+
+        // Fetch URLs with pagination
+        $stmt = $this->db->prepare("SELECT * FROM urls ORDER BY created_at DESC LIMIT :limit OFFSET :offset");
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
@@ -54,6 +76,7 @@ class UrlModel
      *
      * @param string $originalUrl
      * @return string|null The generated short URL or false if an error occurs.
+     * @throws RandomException
      */
     public function createShortUrl(string $originalUrl): string|null
     {
