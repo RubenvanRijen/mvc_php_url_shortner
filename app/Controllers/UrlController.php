@@ -2,6 +2,8 @@
 
 namespace MvcPhpUrlShortner\Controllers;
 
+use http\Exception\BadHeaderException;
+use MongoDB\Driver\Exception\ExecutionTimeoutException;
 use MvcPhpUrlShortner\Models\UrlModel;
 
 class UrlController extends BaseController
@@ -28,7 +30,7 @@ class UrlController extends BaseController
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 
         // Number of items per page
-        $perPage = 5;
+        $perPage = 2;
 
         // Retrieve URLs for the given page
         $urls = $this->getUrlModel()->getUrls($page, $perPage);
@@ -36,16 +38,79 @@ class UrlController extends BaseController
         // Total count of URLs
         $totalUrls = $this->getUrlModel()->getTotalUrlsCount();
 
+        // Total pages
         $totalPages = ceil($totalUrls / $perPage);
+
+        // Get new created url from coockies
+        $newUrl = isset($_COOKIE['newUrl']) ? $_COOKIE['newUrl'] : null;
+
         // Pass data to the view
         $data = [
             'urls' => $urls,
             'totalUrls' => $totalUrls,
             'perPage' => $perPage,
             'currentPage' => $page,
-            'totalPages' => $totalPages
+            'totalPages' => $totalPages,
+            'newUrl' => $newUrl,
+            'baseUrl' => $this->getBaseUrl()
         ];
         $this->render('UrlShorten', ["data" => $data]);
     }
 
+    /**
+     * @return void
+     */
+    public function createShortUrl(): void
+    {
+        // Validate and sanitize the input
+        $originalUrl = filter_var($_POST['url'], FILTER_SANITIZE_URL);
+
+        // Add your validation and error handling here, e.g., check if it's a valid URL.
+
+        // Check if the short URL already exists for the original URL
+        $shortUrl = $this->getUrlModel()->getShortUrlByOriginalUrl($originalUrl);
+
+        // check if url excist otherwise create a new one.
+        if ($shortUrl) {
+            $this->index();
+        } else {
+            $shortUrl = $this->getUrlModel()->createShortUrl($originalUrl);
+        }
+
+        setcookie('newUrl', $shortUrl, time() + 3600, '/');
+        header("Location: /urls");
+        exit;
+    }
+
+    /**
+     * @param $shortUrl
+     * @return void
+     */
+    public function redirectToOriginalUrl($request)
+    {
+        $originalUrl = $this->getUrlModel()->getOriginalUrlByShortUrl($request['short_url']);
+
+        if ($originalUrl) {
+            // Redirect to the original URL
+            header("Location: $originalUrl");
+            exit;
+        } else {
+            // Handle the case where the short URL doesn't exist
+            // You can redirect to an error page or display an error message
+            echo "Short URL not found";
+        }
+    }
+
+    /**
+     * @return string
+     */
+    private function getBaseUrl(): string
+    {
+        // Get the protocol (HTTP or HTTPS)
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
+        // Get the domain name
+        $domain = $_SERVER['HTTP_HOST'];
+        // Output the base URL
+        return $protocol . $domain;
+    }
 }

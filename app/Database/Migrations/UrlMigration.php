@@ -20,7 +20,8 @@ class UrlMigration extends BaseMigration
                 original_url VARCHAR(255) NOT NULL,
                 short_url VARCHAR(255) NOT NULL,
                 usedAmount INT DEFAULT 0,
-                UNIQUE (original_url)
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (original_url, short_url)
             )
         ";
 
@@ -36,6 +37,4 @@ class UrlMigration extends BaseMigration
         $sql = "DROP TABLE IF EXISTS urls";
         $this->getDb()->exec($sql);
     }
-
 }
-

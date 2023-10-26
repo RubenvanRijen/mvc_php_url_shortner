@@ -2,37 +2,44 @@
 
 namespace MvcPhpUrlShortner\Objects;
 
+use DateTime;
+
 class UrlObject
 {
-    private string $short_url;
-    private string $original_url;
+    private string $shortUrl;
+    private string $originalUrl;
     private int $usedAmount;
+    private DateTime $createdAt;
 
-    public function __construct(string $short_url, string $original_url, int $usedAmount)
+
+    public function __construct(string $short_url, string $original_url, int $usedAmount, DateTime $createdAt = null)
     {
-        $this->short_url = $short_url;
-        $this->original_url = $original_url;
+        $this->shortUrl = $short_url;
+        $this->originalUrl = $original_url;
         $this->usedAmount = $usedAmount;
+        if ($createdAt) {
+            $this->createdAt = $createdAt;
+        }
     }
 
     public function getShortUrl(): string
     {
-        return $this->short_url;
+        return $this->shortUrl;
     }
 
-    public function setShortUrl(string $short_url): void
+    public function setShortUrl(string $shortUrl): void
     {
-        $this->short_url = $short_url;
+        $this->shortUrl = $shortUrl;
     }
 
     public function getOriginalUrl(): string
     {
-        return $this->original_url;
+        return $this->originalUrl;
     }
 
-    public function setOriginalUrl(string $original_url): void
+    public function setOriginalUrl(string $originalUrl): void
     {
-        $this->original_url = $original_url;
+        $this->originalUrl = $originalUrl;
     }
 
     public function getUsedAmount(): int
@@ -43,6 +50,16 @@ class UrlObject
     public function setUsedAmount(int $usedAmount): void
     {
         $this->usedAmount = $usedAmount;
+    }
+
+    public function getCreatedAt(): int
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(int $createdAt): void
+    {
+        $this->createdAt = $createdAt;
     }
 
 }

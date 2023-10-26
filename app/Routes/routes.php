@@ -1,7 +1,6 @@
 <?php
 
 use MvcPhpUrlShortner\Controllers\UrlController;
-use MvcPhpUrlShortner\Models\UrlModel;
 use MvcPhpUrlShortner\Routes\Router;
 
 // create the logic for the routes
@@ -11,8 +10,10 @@ $router = new Router();
 $urlController = new UrlController();
 
 // create the routes
-$router->addRoute('/url', $urlController, 'index');
+$router->addRoute('/urls', $urlController, 'index');
 $router->addRoute('/', $urlController, 'index');
+$router->addRoute('/urls/create', $urlController, 'createShortUrl');
+$router->addRoute('/short/{short_url}', $urlController, 'redirectToOriginalUrl');
 
 
 // get the url asked

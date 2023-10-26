@@ -5,9 +5,12 @@ namespace MvcPhpUrlShortner\Models;
 use MvcPhpUrlShortner\Database\Database;
 use MvcPhpUrlShortner\Objects\UrlObject;
 use PDO;
+use Random\RandomException;
 
 class UrlModel
 {
+    public const SHORT_URL_LENGTH = 9;
+    public const RANDOM_BYTES = 32;
     private PDO $db;
 
     public function __construct()
@@ -50,12 +53,11 @@ class UrlModel
      * Create a Short URL for the provided original URL.
      *
      * @param string $originalUrl
-     * @param string $originalUrl
-     * @return string|false The generated short URL or false if an error occurs.
+     * @return string|null The generated short URL or false if an error occurs.
      */
     public function createShortUrl(string $originalUrl): string|null
     {
-        $shortUrl = $this->generateShortUrl();
+        $shortUrl = $this->generateShortUrl($originalUrl);
 
         // check if the url has already been trimmed down
         if ($this->originalUrlExists($originalUrl)) {
@@ -80,19 +82,13 @@ class UrlModel
 
     /**
      * Generate a Short URL based on the original URL.
-     *
      * @param string $originalUrl
      * @return string
+     * @throws RandomException
      */
     private function generateShortUrl(string $originalUrl): string
     {
-        // Create a unique identifier for the original URL (e.g., using a hash function)
-        $urlHash = md5($originalUrl);
-        // Convert the hash to a short string (e.g., using base64 encoding)
-        $shortUrl = base64_encode($urlHash);
-        // You might want to further process $shortUrl to make it more user-friendly (e.g., remove special characters)
-
-        return $shortUrl;
+        return substr(base64_encode(sha1(uniqid(random_bytes(self::RANDOM_BYTES), true))), 0, self::SHORT_URL_LENGTH);
     }
 
     /**
@@ -121,9 +117,9 @@ class UrlModel
     private function originalUrlExists(string $originalUrl): bool
     {
         // Prepare a SQL statement to check for the existence of the short URL
-        $sql = "SELECT COUNT(*) FROM urls WHERE original_url = :originalUrl";
+        $sql = "SELECT COUNT(*) FROM urls WHERE original_url = :original_url";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':original_url', $shororiginalUrltUrl, PDO::PARAM_STR);
+        $stmt->bindParam(':original_url', $originalUrl, PDO::PARAM_STR);
         $stmt->execute();
         // If the count is greater than 0, the original URL already exists
         return $stmt->fetchColumn() > 0;
@@ -132,22 +128,22 @@ class UrlModel
     /**
      * Fetch URL data by original URL.
      *
-     * @param string $originalUrl
+     * @param string $shortUrl
      * @return array|null
      */
-    public function getUrlByOriginalUrl(string $originalUrl): ?array
+    public function getOriginalUrlByShortUrl(string $shortUrl): ?string
     {
-        // Prepare the SQL statement to select the URL data based on the original URL
-        $sql = "SELECT * FROM urls WHERE original_url = :original_url";
+        // Prepare the SQL statement to select the short URL based on the original URL
+        $sql = "SELECT original_url FROM urls WHERE short_url = :short_url";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':original_url', $originalUrl, PDO::PARAM_STR);
+        $stmt->bindParam(':short_url', $shortUrl, PDO::PARAM_STR);
         $stmt->execute();
 
-        // Fetch the URL data as an associative array
-        $urlData = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Fetch the short URL
+        $originalUrl = $stmt->fetchColumn();
 
-        // If data is found, return it; otherwise, return null
-        return $urlData[0]['shortUrl'] ?: null;
+        // If a short URL is found, return it; otherwise, return null
+        return $originalUrl ?: null;
     }
 
     /**
