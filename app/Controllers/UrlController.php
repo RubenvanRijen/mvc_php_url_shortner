@@ -63,7 +63,8 @@ class UrlController extends BaseController
 
         // Add  validation and error handling here, e.g., check if it's a valid URL.
         if (!$this->isValidUrl($originalUrl)) {
-            header("Location: /urls");
+            $_SESSION['error'] = "Invalid URL. Please enter a valid URL.";
+            $this->index();
             exit;
         }
         // Check if the short URL already exists for the original URL

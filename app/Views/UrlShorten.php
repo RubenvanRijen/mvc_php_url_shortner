@@ -14,6 +14,12 @@
             <input type="text" id="url" name="url"
                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                    placeholder="https://urlshortner.com" required>
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="error-message text-red-500">
+                    <?php echo $_SESSION['error']; ?>
+                </div>
+                <?php unset($_SESSION['error']); // Clear the error message ?>
+            <?php endif; ?>
         </div>
         <div class="flex justify-end">
             <button type="submit"
@@ -25,7 +31,8 @@
     <div class="w-1/2 relative overflow-x-auto shadow-md sm:rounded-lg mb-5">
         <?php if ($data['newUrl'] != null) : ?>
             <h2 class="mb-4">Created Url: <a target="_blank" class="mb-4"
-                                href="<?php echo $data['baseUrl'] . '/short/' . $data['newUrl']; ?>">Short Url</a>
+                                             href="<?php echo $data['baseUrl'] . '/short/' . $data['newUrl']; ?>">Short
+                    Url</a>
             </h2>
         <?php endif; ?>
 
