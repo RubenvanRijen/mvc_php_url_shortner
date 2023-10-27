@@ -2,7 +2,7 @@
 
 This project is made with plain php in the basic and old MVC structure.
 
-For testing there is used PHPUnit and Mockery.
+For testing I used PHPUnit and Mockery.
 
 # Views
 
