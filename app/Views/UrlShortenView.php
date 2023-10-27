@@ -44,8 +44,7 @@
         </form>
         <div class="w-1/2 relative overflow-x-auto shadow-md sm:rounded-lg mb-5">
             <?php if ($data['newUrl'] != null) : ?>
-                <h2 class="mb-4">Created Url: <a target="_blank" class="mb-4" href="<?php echo $data['baseUrl'] . '/short/' . $data['newUrl']; ?>">Short
-                        Url</a>
+                <h2 class="mb-4">Created Url: <a target="_blank" class="mb-4" href="<?php echo $data['baseUrl'] . '/short/' . $data['newUrl']; ?>"><?php echo $data['baseUrl'] . '/short/' . $data['newUrl']; ?></a>
                 </h2>
             <?php endif; ?>
 
