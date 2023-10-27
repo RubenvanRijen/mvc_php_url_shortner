@@ -2,8 +2,6 @@
 
 namespace MvcPhpUrlShortner\Controllers;
 
-use http\Exception\BadHeaderException;
-use MongoDB\Driver\Exception\ExecutionTimeoutException;
 use MvcPhpUrlShortner\Models\UrlModel;
 use Random\RandomException;
 
