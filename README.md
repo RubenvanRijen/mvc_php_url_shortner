@@ -24,7 +24,7 @@ This is because all the seeders must be created in the AppSeeder file and then i
 ## Commands
 
 composer seed.<br>
-&nbsp;Seed the database.
+&nbsp;- Seed the database.
 
 # Migrations
 
@@ -35,8 +35,8 @@ creating and dropping the tables.
 ## Commands
 
 composer migrate.<br>
-&nbsp;Migrate the tables.<br>
+&nbsp;- Migrate the tables.<br>
 composer migrate:drop.<br>
-&nbsp;Drop all the tables.<br>
+&nbsp;- Drop all the tables.<br>
 composer migrate:fresh --seed.<br>
-&nbsp;Drop and then create the tables and seed the db.<br>
+&nbsp;- Drop and then create the tables and seed the db.<br>
