@@ -7,7 +7,7 @@ class BaseController
 
 
     /**
-     * the function to render a view in a function
+     * The function to render a view in a function
      * @param $view
      * @param array $data
      * @return void

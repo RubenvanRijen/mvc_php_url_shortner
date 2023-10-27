@@ -103,6 +103,7 @@ class Router
     }
 
     /**
+     * get the paramas from the route
      * @param string $uri
      * @param string $route
      * @return array

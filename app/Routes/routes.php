@@ -23,5 +23,7 @@ $uri = $_SERVER['REQUEST_URI'];
 try {
     $router->dispatch($uri);
 } catch (\Exception $e) {
-    throw $e;
+    // No route found, return a 404 Not Found response
+    http_response_code(404);
+    include "./app/Views/Errors/404NotFoundView.php";
 }
