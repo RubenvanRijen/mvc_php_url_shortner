@@ -2,6 +2,7 @@
 
 namespace MvcPhpUrlShortner\Models;
 
+use DateTime;
 use MvcPhpUrlShortner\Database\Database;
 use MvcPhpUrlShortner\Objects\UrlObject;
 use PDO;
@@ -40,7 +41,7 @@ class UrlModel
     }
 
     /**
-     * sort the urls by date. from newest to oldest.
+     * Sort the urls by date. From newest to oldest.
      * @param $page
      * @param $perPage
      * @return false|array
@@ -72,19 +73,18 @@ class UrlModel
     }
 
     /**
-     * Create a Short URL for the provided original URL.
-     *
+     * Create a Short URL for the provided original URL and return the whole object.
      * @param string $originalUrl
-     * @return string|null The generated short URL or false if an error occurs.
+     * @return UrlObject|null 
      * @throws RandomException
      */
-    public function createShortUrl(string $originalUrl): string|null
+    public function createShortUrl(string $originalUrl): UrlObject|null
     {
         $shortUrl = $this->generateShortUrl($originalUrl);
 
-        // check if the url has already been trimmed down
+        // check if the url has already been used and shortened.
         if ($this->originalUrlExists($originalUrl)) {
-            return $this->getShortUrlByOriginalUrl($originalUrl);
+            return $this->getUrlDataByOriginalUrl($originalUrl);
         }
         // Check if the short URL already exists
         if ($this->shortUrlExists($shortUrl)) {
@@ -97,9 +97,10 @@ class UrlModel
         $stmt->bindParam(':short_url', $shortUrl);
 
         if ($stmt->execute()) {
-            return $shortUrl;
+            $lastInsertId = $this->db->lastInsertId();
+            return $this->getUrlDataById($lastInsertId);
         } else {
-            return null; // Handle the case where the insert operation fails
+            return null;
         }
     }
 
@@ -116,13 +117,12 @@ class UrlModel
 
     /**
      * Check if a short URL already exists in the database.
-     *
      * @param string $shortUrl
      * @return bool
      */
     private function shortUrlExists(string $shortUrl): bool
     {
-        // Prepare a SQL statement to check for the existence of the short URL
+        // The SQL statement to check for the existence of the short URL
         $sql = "SELECT COUNT(*) FROM urls WHERE short_url = :short_url";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':short_url', $shortUrl, PDO::PARAM_STR);
@@ -133,13 +133,12 @@ class UrlModel
 
     /**
      * Check if a short URL already exists in the database.
-     *
      * @param string $originalUrl
      * @return bool
      */
     private function originalUrlExists(string $originalUrl): bool
     {
-        // Prepare a SQL statement to check for the existence of the short URL
+        // The a SQL statement to check for the existence of the short URL
         $sql = "SELECT COUNT(*) FROM urls WHERE original_url = :original_url";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':original_url', $originalUrl, PDO::PARAM_STR);
@@ -149,44 +148,96 @@ class UrlModel
     }
 
     /**
+     * Increase the used amount of a short url.
+     * @return void
+     */
+    public function increaseUsedAmount(int $id)
+    {
+        $sql = "UPDATE urls SET used_amount = used_amount + 1 WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+    }
+
+    /**
      * Fetch URL data by original URL.
      *
      * @param string $shortUrl
-     * @return array|null
+     * @return UrlObject|null
      */
-    public function getOriginalUrlByShortUrl(string $shortUrl): ?string
+    public function getUrlDataByShortUrl(string $shortUrl): ?UrlObject
     {
-        // Prepare the SQL statement to select the short URL based on the original URL
-        $sql = "SELECT original_url FROM urls WHERE short_url = :short_url";
+        // The SQL statement to select the Url Object based on the short URL
+        $sql = "SELECT * FROM urls WHERE short_url = :short_url";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':short_url', $shortUrl, PDO::PARAM_STR);
         $stmt->execute();
 
-        // Fetch the short URL
-        $originalUrl = $stmt->fetchColumn();
-
-        // If a short URL is found, return it; otherwise, return null
-        return $originalUrl ?: null;
+        //fetch the data and transform it into an urlObject.
+        return $this->fetchUrlObject($stmt);
     }
 
     /**
-     * Fetch the short URL by original URL.
+     * Summary of fetchUrlObject
+     * @param mixed $stmt
+     * @return UrlObject|null
+     */
+    private function fetchUrlObject($stmt): UrlObject|null
+    {
+        // Fetch the Url data
+        $urlData = $stmt->fetch(PDO::FETCH_OBJ);
+
+        // If a Url data is found, return it; otherwise, return null
+        if ($urlData) {
+            // Convert the created_at string to a DateTime object
+            $createdAt = new DateTime($urlData->created_at);
+            // Create an instance of UrlObject using the fetched data
+            return new UrlObject(
+                id: $urlData->id,
+                shortUrl: $urlData->short_url,
+                originalUrl: $urlData->original_url,
+                usedAmount: $urlData->used_amount,
+                createdAt: $createdAt
+            );
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Fetch the Url object by original URL.
      *
      * @param string $originalUrl
-     * @return string|null
+     * @return UrlObject|null
      */
-    public function getShortUrlByOriginalUrl(string $originalUrl): ?string
+    public function getUrlDataByOriginalUrl(string $originalUrl): ?UrlObject
     {
-        // Prepare the SQL statement to select the short URL based on the original URL
-        $sql = "SELECT short_url FROM urls WHERE original_url = :original_url";
+        // The SQL statement to select the Url object based on the original URL
+        $sql = "SELECT * FROM urls WHERE original_url = :original_url";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':original_url', $originalUrl, PDO::PARAM_STR);
         $stmt->execute();
 
-        // Fetch the short URL
-        $shortUrl = $stmt->fetchColumn();
+        //fetch the data and transform it into an urlObject.
+        return $this->fetchUrlObject($stmt);
+    }
 
-        // If a short URL is found, return it; otherwise, return null
-        return $shortUrl ?: null;
+
+
+    /**
+     * get the url object by id
+     * @param int $id
+     * @return UrlObject|null
+     */
+    public function getUrlDataById(int $id): ?UrlObject
+    {
+        // The SQL statement to select the Url obhject based on the ID
+        $sql = "SELECT * FROM urls WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+        $stmt->execute();
+
+        //fetch the data and transform it into an urlObject.
+        return $this->fetchUrlObject($stmt);
     }
 }

@@ -5,8 +5,7 @@
         "seed": "php ./app/Database/Seeders/AppSeederScript.php",
         "migrate": "php ./app/Database/Migrations/AppMigrateScript.php",
         "migrate:drop": "php ./app/Database/Migrations/AppUnMigrateApplication.php",
-        "migrate:fresh --seed": "php ./app/Database/Migrations/AppUnMigrateApplication.php && php ./app/Database/Migrations/AppMigrateScript.php && php ./app/Database/Seeders/AppSeederScript.php",
-        "migrate:fresh": "php ./app/Database/Migrations/AppUnMigrateApplication.php && php ./app/Database/Migrations/AppMigrateScript.php"
+        "migrate:fresh --seed": "php ./app/Database/Migrations/AppUnMigrateApplication.php && php ./app/Database/Migrations/AppMigrateScript.php && php ./app/Database/Seeders/AppSeederScript.php"
 
     },
     "autoload": {

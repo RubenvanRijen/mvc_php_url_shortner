@@ -15,6 +15,7 @@ class UrlController extends BaseController
     }
 
     /**
+     * Get the url model so that it's not needed to inject in the controller.
      * @return UrlModel
      */
     private function getUrlModel(): UrlModel
@@ -24,10 +25,12 @@ class UrlController extends BaseController
 
 
     /**
+     * The main view of the application and getting all the urls.
      * @return void
      */
     public function index(): void
     {
+        //Get the requested page from the url params.
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         // Number of items per page
         $perPage = 5;
@@ -49,10 +52,11 @@ class UrlController extends BaseController
             'newUrl' => $newUrl,
             'baseUrl' => $this->getBaseUrl()
         ];
-        $this->render('UrlShorten', ["data" => $data]);
+        $this->render('UrlShortenView', ["data" => $data]);
     }
 
     /**
+     * create the short url when the form is submitted.
      * @return void
      * @throws RandomException
      */
@@ -61,17 +65,22 @@ class UrlController extends BaseController
         // Validate and sanitize the input
         $originalUrl = filter_var($_POST['url'], FILTER_SANITIZE_URL);
 
-        // Add  validation and error handling here, e.g., check if it's a valid URL.
+        // Validation and error handling, check if it's a valid URL.
         if (!$this->isValidUrl($originalUrl)) {
-            $_SESSION['error'] = "Invalid URL. Please enter a valid URL.";
+            $_SESSION['url_error'] = "Invalid URL. Please enter a valid URL.";
             $this->index();
             exit;
         }
         // Check if the short URL already exists for the original URL
-        $shortUrl = $this->getUrlModel()->getShortUrlByOriginalUrl($originalUrl);
+        $shortUrl = $this->getUrlModel()->getUrlDataByOriginalUrl($originalUrl);
         // check if url excist otherwise create a new one.
         if (!$shortUrl) {
             $shortUrl = $this->getUrlModel()->createShortUrl($originalUrl);
+        }
+        if ($shortUrl === null) {
+            $_SESSION['generate_error'] = "Er is een fout opgetreden, porbeer het opnieuw";
+            $this->index();
+            exit;
         }
 
         // set cookie to show the last created url someone made.
@@ -79,18 +88,8 @@ class UrlController extends BaseController
             // Delete the old cookie by setting an expiration time in the past (e.g., 1 second ago).
             setcookie('newUrl', '', time() - 1, '/');
         }
-        setcookie('newUrl', $shortUrl, time() + 3600, '/');
+        setcookie('newUrl', $shortUrl->getShortUrl(), time() + 3600, '/');
         header("Location: /urls");
-        exit;
-    }
-
-    /**
-     * redirect with 302 warning.
-     * @return void
-     */
-    private function redirectToUrlIndex(): void
-    {
-        header("Location: /urls", true, 302);
         exit;
     }
 
@@ -106,10 +105,11 @@ class UrlController extends BaseController
      */
     public function redirectToOriginalUrl($request)
     {
-        $originalUrl = $this->getUrlModel()->getOriginalUrlByShortUrl($request['short_url']);
-
-        if ($originalUrl) {
+        $urlObject = $this->getUrlModel()->getUrlDataByShortUrl($request['short_url']);
+        $this->getUrlModel()->increaseUsedAmount($urlObject->getId());
+        if ($urlObject) {
             // Redirect to the original URL
+            $originalUrl = $urlObject->getOriginalUrl();
             header("Location: $originalUrl");
             exit;
         } else {

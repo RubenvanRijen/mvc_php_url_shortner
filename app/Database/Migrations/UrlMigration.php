@@ -19,7 +19,7 @@ class UrlMigration extends BaseMigration
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 original_url VARCHAR(255) NOT NULL,
                 short_url VARCHAR(255) NOT NULL,
-                usedAmount INT DEFAULT 0,
+                used_amount INT DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             UNIQUE (original_url, short_url)
             )

@@ -14,18 +14,18 @@ class UrlSeeder extends BaseSeeder
     public function seed(): void
     {
         $urlData = [
-            new UrlObject("https://music.youtube1.com/", "https://music.youtube1.com/", 0),
-            new UrlObject("https://music.youtube2.com/", "https://music.youtube2.com/", 0),
-            new UrlObject("https://music.youtube3.com/", "https://music.youtube3.com/", 0),
-            new UrlObject("https://music.youtube4.com/", "https://music.youtube4.com/", 0),
+            new UrlObject(shortUrl: "DUJFKEDH6", originalUrl: "https://music.youtube1.com/", usedAmount: 0),
+            new UrlObject(shortUrl: "OKDUE48CJ", originalUrl: "https://music.youtube2.com/", usedAmount: 0),
+            new UrlObject(shortUrl: "WHSNCJDYE", originalUrl: "https://music.youtube3.com/", usedAmount: 0),
+            new UrlObject(shortUrl: "WNCMDFKI8", originalUrl: "https://music.youtube4.com/", usedAmount: 0),
         ];
 
-        $stmt = $this->getDb()->prepare("INSERT INTO urls (short_url, original_url, usedAmount) VALUES (:short_url, :original_url, :usedAmount)");
+        $stmt = $this->getDb()->prepare("INSERT INTO urls (short_url, original_url, used_amount) VALUES (:short_url, :original_url, :used_amount)");
 
         foreach ($urlData as $url) {
             $stmt->bindValue(':short_url', $url->getShortUrl());
             $stmt->bindValue(':original_url', $url->getOriginalUrl());
-            $stmt->bindValue(':usedAmount', $url->getUsedAmount());
+            $stmt->bindValue(':used_amount', $url->getUsedAmount());
 
             $stmt->execute();
         }
