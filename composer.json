@@ -2,6 +2,8 @@
     "name": "rubenr/mvc_php_url_shortner",
     "description": "a url shortner made with plain php in a mvc structure",
     "scripts": {
+        "test": "phpunit --bootstrap vendor/autoload.php app/Tests",
+
         "seed": "php ./app/Database/Seeders/AppSeederScript.php",
         "migrate": "php ./app/Database/Migrations/AppMigrateScript.php",
         "migrate:drop": "php ./app/Database/Migrations/AppUnMigrateApplication.php",
@@ -25,5 +27,9 @@
     "require": {
         "php": "^8.2.0",
         "ext-pdo": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "10",
+        "mockery/mockery": "^1.6"
     }
 }

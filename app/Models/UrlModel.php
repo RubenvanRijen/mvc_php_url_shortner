@@ -120,7 +120,7 @@ class UrlModel
      * @param string $shortUrl
      * @return bool
      */
-    private function shortUrlExists(string $shortUrl): bool
+    public function shortUrlExists(string $shortUrl): bool
     {
         // The SQL statement to check for the existence of the short URL
         $sql = "SELECT COUNT(*) FROM urls WHERE short_url = :short_url";
@@ -136,7 +136,7 @@ class UrlModel
      * @param string $originalUrl
      * @return bool
      */
-    private function originalUrlExists(string $originalUrl): bool
+    public function originalUrlExists(string $originalUrl): bool
     {
         // The a SQL statement to check for the existence of the short URL
         $sql = "SELECT COUNT(*) FROM urls WHERE original_url = :original_url";
@@ -160,7 +160,7 @@ class UrlModel
     }
 
     /**
-     * Fetch URL data by original URL.
+     * Fetch URL data by short URL.
      *
      * @param string $shortUrl
      * @return UrlObject|null

@@ -113,9 +113,8 @@ class UrlController extends BaseController
             header("Location: $originalUrl");
             exit;
         } else {
-            // Handle the case where the short URL doesn't exist
-            // You can redirect to an error page or display an error message
-            echo "Short URL not found";
+            // Handle the case where the short URL doesn't exist, just return index page.
+            header("Location: /urls");
         }
     }
 
